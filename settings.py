@@ -4,8 +4,8 @@ class Settings():
     def __init__(self):
         """Initialize the game's settings"""        
         # Number of rows and columns in maze
-        self.rows = 22
-        self.cols = 25
+        self.rows = 20
+        self.cols = 20
         
         # Coordinates where maze will begin to draw
         self.initial_tile_row = self.rows // 2
@@ -78,6 +78,12 @@ class Settings():
                               2 * self.border_y)
         self.bg_color = (230, 230, 230) #gray
         
+        self.button_width = 400
+        self.button_height = 50
+        self.button_color = (0, 255, 0)
+        self.button_text_color = (0, 0, 0)
+        self.button_font_size = 40
+        
         self.rotate_cw_prob = .05
         self.rotate_ccw_prob = .05
         self.reflect_x_prob = .05
@@ -90,4 +96,10 @@ class Settings():
         
         # delay between displaying new tiles during maze build
         # set to 0 if you don't want to display maze build
-        self.maze_build_delay = 0.001
+        self.maze_build_delay = 0
+        
+        self.time_limit = 100
+        self.bonus_start = 1000
+        self.bonus_coeff = -self.bonus_start / (self.time_limit ** 2)
+        
+        self.solve_pause = 3
