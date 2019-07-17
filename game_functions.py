@@ -5,13 +5,21 @@ from tile import Tile
 import time
 
 def update_screen(settings, screen, maze, player_tile,
-                  stats, play_button):
+                  stats, play_button, sb):
     """Update images on the screen and flip to the new screen"""
     # Redraw the screen during each pass through the loop
     screen.fill(settings.bg_color)
+    # Only draws maze, player tile, scoreboard if game is active
+    # (that is, not when between levels)
     if stats.game_active:
         maze.draw(screen, settings)
         player_tile.draw()
+        sb.prep_bonus(settings, stats)
+        sb.prep_score(settings, stats)
+        sb.prep_level(settings, stats)
+        sb.draw_scoreboard()
+    # If game not active, display button inviting player
+    # to activate game
     else:
         play_button.draw_button()
         
@@ -32,8 +40,12 @@ def check_keydown_events(settings, screen, event, maze, player_tile,
                          arrows, stats):
     """Respond to keypresses"""
     # If arrow key pressed, player tile moves if possible
-    if event.key in [pygame.K_UP, pygame.K_DOWN,
-                     pygame.K_LEFT, pygame.K_RIGHT]:
+    if not stats.game_over and event.key in [pygame.K_UP, 
+                                             pygame.K_DOWN,
+                                             pygame.K_LEFT,
+                                             pygame.K_RIGHT]:
+        # If game is active (player can make moves),
+        # arrow keypress is interpreted based on arrows object
         if stats.game_active:
             if event.key == pygame.K_UP:
                 direction = arrows.up
@@ -49,9 +61,10 @@ def check_keydown_events(settings, screen, event, maze, player_tile,
             if maze.can_move_to_tile(settings, next_tile):
                 player_tile.move(settings, direction)
                 new_tile_value = maze.get_value(settings, player_tile)
-                # take action based on next tile, such as updating arrows
+                # take action based on next tile, such as update arrows
                 call_tile_event(settings, arrows, new_tile_value, stats)
         else: # not stats.game_active
+            # If game is not active, an arrow keypress activates game
             stats.game_active = True
             stats.start_time = datetime.datetime.now()
                 
@@ -69,13 +82,21 @@ def call_tile_event(settings, arrows, tile_value, stats):
         arrows.reflect_x()
     elif tile_value == settings.reflect_y_value:
         arrows.reflect_y()
-    elif tile_value == settings.end_value:
-        stats.finish_time = datetime.datetime.now()
         
-def player_solved_maze(settings, stats):
+def player_solved_maze(settings, stats, sb):
+    """
+    When player solves maze, update settings/stats
+    and prepare for next level
+    """
+    # Game not active between levels
     stats.game_active = False
-    time_delta = stats.finish_time - stats.start_time
-    time_secs = time_delta.total_seconds()
-    bonus = settings.bonus_coeff * time_secs ** 2 + settings.bonus_start
-    print(bonus)
+    # Timer bonus added to score
+    stats.score += sb.bonus
+    # Increment level
+    stats.level += 1
+    # Increase difficulty of next maze
+    settings.rows += 1
+    settings.cols += 2
+    # Recalculate settings based on changed settings
+    settings.calculate()
     time.sleep(settings.solve_pause)

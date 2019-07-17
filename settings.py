@@ -7,10 +7,6 @@ class Settings():
         self.rows = 20
         self.cols = 20
         
-        # Coordinates where maze will begin to draw
-        self.initial_tile_row = self.rows // 2
-        self.initial_tile_col = self.cols // 2
-        
         # Sides that the maze starts and ends on
         # 'T'=top, 'B'=bottom, 'R'=right, 'L'=left 
         self.start_side = 'W'
@@ -63,7 +59,7 @@ class Settings():
                             self.reflect_y_color,
                             self.solve_color]
         
-        # Location of screen on monitor
+        # Location of pygame display on monitor
         self.screen_x = 50
         self.screen_y = 50
         
@@ -71,18 +67,26 @@ class Settings():
         self.border_x = 25
         self.border_y = 25
         
-        # Size and background color of screen
-        self.screen_width = (self.cols * self.tile_size +
-                             2 * self.border_x)
-        self.screen_height = (self.rows * self.tile_size +
-                              2 * self.border_y)
+        # Background color on pygame display
         self.bg_color = (230, 230, 230) #gray
         
+        # Settings for message telling player
+        # how to activate game
         self.button_width = 400
         self.button_height = 50
         self.button_color = (0, 255, 0)
         self.button_text_color = (0, 0, 0)
-        self.button_font_size = 40
+        self.button_font = 'ocr a extended'
+        self.button_font_size = 20
+        self.button_message = 'PRESS ANY ARROW KEY TO START'
+        
+        # Scoreboard font settings
+        self.sb_font_color = (30, 30, 30)
+        self.sb_font = 'ocr a extended'
+        self.sb_font_size = 20
+        
+        # Space needed for scoreboard
+        self.scoreboard_height = 40
         
         self.rotate_cw_prob = .05
         self.rotate_ccw_prob = .05
@@ -98,8 +102,29 @@ class Settings():
         # set to 0 if you don't want to display maze build
         self.maze_build_delay = 0
         
-        self.time_limit = 100
+        # Time (in seconds) when timer bonus reaches zero
+        self.time_limit = 60
+        # Starting value of timer bonus
         self.bonus_start = 1000
-        self.bonus_coeff = -self.bonus_start / (self.time_limit ** 2)
         
+        # Length of pause (in seconds) between levels
         self.solve_pause = 3
+        
+        # Calculates settings that depend on other settings
+        self.calculate()
+
+    def calculate(self):
+        # Coordinates where maze will begin to draw
+        self.initial_tile_row = self.rows // 2
+        self.initial_tile_col = self.cols // 2
+        
+        # Size and background color of screen
+        self.screen_width = (self.cols * self.tile_size +
+                             2 * self.border_x)
+        self.screen_height = (self.rows * self.tile_size +
+                              2 * self.border_y +
+                              self.scoreboard_height)
+                              
+        # Value of timer bonus is a quadratic function of time
+        # self.bonus_coeff is the coefficient of the time^2 term
+        self.bonus_coeff = -self.bonus_start / (self.time_limit ** 2)

@@ -34,7 +34,7 @@ class Tile(Sprite):
         if settings != None:
             self.rect = pygame.Rect(
                 self.col * settings.tile_size + settings.border_x,
-                self.row * settings.tile_size + settings.border_y,
+                self.row * settings.tile_size + settings.border_y + settings.scoreboard_height,
                 settings.tile_size,
                 settings.tile_size)
         else:
@@ -54,7 +54,7 @@ class Tile(Sprite):
         if self.rect != None:
             self.rect = pygame.Rect(
                 self.col * settings.tile_size + settings.border_x,
-                self.row * settings.tile_size + settings.border_y,
+                self.row * settings.tile_size + settings.border_y + settings.scoreboard_height,
                 settings.tile_size,
                 settings.tile_size)    
         
