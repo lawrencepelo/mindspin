@@ -72,21 +72,37 @@ class Settings():
         
         # Settings for message telling player
         # how to activate game
-        self.button_width = 400
+        self.button_width = 425
         self.button_height = 50
         self.button_color = (0, 255, 0)
         self.button_text_color = (0, 0, 0)
         self.button_font = 'ocr a extended'
-        self.button_font_size = 20
-        self.button_message = 'PRESS ANY ARROW KEY TO START'
+        self.button_font_size = 18
+        self.button_message = 'PRESS ANY ARROW KEY TO START LEVEL '
         
         # Scoreboard font settings
         self.sb_font_color = (30, 30, 30)
         self.sb_font = 'ocr a extended'
         self.sb_font_size = 20
+        self.sb_indent = 20
         
         # Space needed for scoreboard
         self.scoreboard_height = 40
+        self.message_height = 40
+        # List of congratulatory messages for when player solves maze
+        self.solved_msgs = ['GREAT JOB!',
+                            'FANTASTIC!',
+                            "YOU'RE A GENIUS!",
+                            'HOLY SMOKES!',
+                            'GOODNESS GRACIOUS!',
+                            'UNBELIEVABLE!',
+                            'OUTTA SIGHT!',
+                            'CONGRATULATIONS!',
+                            'WOWIE ZOWIE!',
+                            'GREAT GOOGLY MOOGLY!',
+                            'COWABUNGA!',
+                            'YOU CRUSHED IT!',
+                            'DY-NO-MITE!']         
         
         self.rotate_cw_prob = .05
         self.rotate_ccw_prob = .05
@@ -107,8 +123,12 @@ class Settings():
         # Starting value of timer bonus
         self.bonus_start = 1000
         
-        # Length of pause (in seconds) between levels
-        self.solve_pause = 3
+        # Length of pause (in seconds) between 'solved' messages
+        self.solve_pause = 2
+        
+        # Difficulty bonus is number of tiles on solution path
+        # multiplied by diff_bonus_multiplier
+        self.diff_bonus_multiplier = 10
         
         # Calculates settings that depend on other settings
         self.calculate()
@@ -123,7 +143,8 @@ class Settings():
                              2 * self.border_x)
         self.screen_height = (self.rows * self.tile_size +
                               2 * self.border_y +
-                              self.scoreboard_height)
+                              self.scoreboard_height +
+                              self.message_height)
                               
         # Value of timer bonus is a quadratic function of time
         # self.bonus_coeff is the coefficient of the time^2 term

@@ -6,9 +6,8 @@ class GameStats():
         
         # game_active = True when player can make moves
         # game_active = False between mazes
-        self.game_active = False
-        
-        self.game_over = False
+        self.maze_status = 'before'
+
         self.score = 0
         self.level = 1
         

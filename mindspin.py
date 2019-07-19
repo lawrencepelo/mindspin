@@ -15,10 +15,12 @@ def run_game():
     """Central function that controls the game"""
    
     pygame.init()
+    pygame.mouse.set_visible(False)
     
     # Initialize settings and stats
     settings = Settings()
     stats = GameStats()
+    
     
     # main gameplay loop
     while True:    
@@ -33,7 +35,10 @@ def run_game():
             (settings.screen_width, settings.screen_height))
         pygame.display.set_caption('Mindspin')    
         sb = Scoreboard(settings, screen, stats)
-        play_button = Button(settings, screen)
+        sb.prep_score(settings, stats)
+        sb.prep_level(settings, stats)
+        sb.prep_message(settings, 'WELCOME TO MINDSPIN!')
+        play_button = Button(settings, screen, stats)
         
         # Create random maze
         maze = Maze(screen, settings)
@@ -46,15 +51,19 @@ def run_game():
         # moves when arrow keys are pressed
         arrows = Arrows(settings)
         
+        # Clear any excess keypresses
+        pygame.event.clear()
+        
         # Loop continually checks for player keypresses
         # and redraws screen until player solves maze or quits
         while not player_tile.same_location_as(maze.end_tile):
             gf.check_events(settings, screen, maze, player_tile,
-                            arrows, stats, play_button)
+                            arrows, stats, play_button, sb)
             gf.update_screen(settings, screen, maze, player_tile,
                              stats, play_button, sb)
                              
         # Updates score and prepares for next level
-        gf.player_solved_maze(settings, stats, sb)
+        gf.player_solved_maze(settings, screen, maze, player_tile,
+                              stats, play_button, sb)
 
 run_game()
