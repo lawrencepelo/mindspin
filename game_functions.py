@@ -15,7 +15,7 @@ def update_screen(settings, screen, maze, player_tile,
     if stats.maze_status == 'before':
         play_button.draw_button()
     else:
-        maze.draw(screen, settings)
+        maze.draw_from_group(screen, settings)
         player_tile.draw()
         
     sb.prep_bonus(settings, stats)

@@ -51,7 +51,7 @@ def run_game():
         # moves when arrow keys are pressed
         arrows = Arrows(settings)
         
-        # Clear any excess keypresses
+        # Clear excess keypresses from event queue
         pygame.event.clear()
         
         # Loop continually checks for player keypresses

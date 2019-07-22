@@ -34,6 +34,12 @@ class Maze():
         self.start_tile = None
         self.end_tile = None
         
+        self.wall_rect = pygame.Rect(
+            settings.border_x,
+            settings.border_y + settings.scoreboard_height,
+            settings.cols * (settings.tile_size + settings.tile_border),
+            settings.rows * (settings.tile_size + settings.tile_border))
+        
         # values_array is a 2D list that holds maze tile values
         # in text form.
         # All maze tile values are initalized to wall values.
@@ -55,6 +61,11 @@ class Maze():
         self.solved = False
         # Solves the maze and populates the solve_tiles Group
         self.solve(screen, settings, self.start_tile)
+        
+        self.choose_special_tiles(settings)
+        
+        self.path_tiles = Group()
+        self.create_path_tiles_group(screen, settings)        
             
     def is_inside_maze(self, settings, tile):
         """"Returns True if tile is inside maze, otherwise False"""
@@ -121,7 +132,7 @@ class Maze():
         # Displays maze after each path extension
         if settings.maze_build_delay > 0:
             time.sleep(settings.maze_build_delay)
-            self.draw(screen, settings)
+            self.draw_from_text(screen, settings)
             pygame.display.flip()
            
         # From each path tile, path extensions attempted in a
@@ -202,7 +213,7 @@ class Maze():
                 print(self.values_array[i][j], end = '')
             print('\r')
 
-    def draw(self, screen, settings):
+    def draw_from_text(self, screen, settings):
         """Displays maze in pygame display"""
         for row in range(0, settings.rows):
             for col in range(0, settings.cols):
@@ -212,13 +223,29 @@ class Maze():
                 new_tile_value = self.get_value(settings, new_tile)
                 new_tile.color = settings.tile_colors[new_tile_value]                
                 new_tile.draw()
+                
+    def draw_from_group(self, screen, settings):
+        pygame.draw.rect(screen, settings.wall_color, self.wall_rect)
+        for path_tile in self.path_tiles:
+            path_tile.draw()
+                
+    def create_path_tiles_group(self, screen, settings):
+        for row in range(0, settings.rows):
+            for col in range(0, settings.cols):
+                new_tile = Tile(row, col, 
+                                screen = screen, 
+                                settings = settings)
+                new_tile_value = self.get_value(settings, new_tile)
+                if new_tile_value != settings.wall_value:
+                    new_tile.color = settings.tile_colors[new_tile_value]
+                    self.path_tiles.add(new_tile)          
 
     def solve(self, screen, settings, tile):
         """Solves the maze from given tile using recursive algorithm"""
         # Display attempted solution path after each step
         if settings.maze_build_delay > 0:
             time.sleep(settings.maze_build_delay)
-            self.draw(screen, settings)
+            self.draw_from_text(screen, settings)
             for solve_tile in self.solve_tiles:
                 solve_tile.draw()
             pygame.display.flip()
@@ -269,3 +296,13 @@ class Maze():
             if next_tile.same_location_as(self.end_tile):
                 return True
         return False
+
+    def choose_special_tiles(self, settings):
+        solve_tile_list = list(range(0, len(self.solve_tiles)))        
+        solve_tile_shuffle = random.sample(solve_tile_list,
+                                           settings.num_rotate_cw_tiles)
+        i = 0
+        for solve_tile in self.solve_tiles:
+            if i in solve_tile_shuffle:
+                self.set_value(solve_tile, settings.rotate_cw_value)
+            i += 1

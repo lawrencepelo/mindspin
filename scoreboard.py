@@ -88,7 +88,7 @@ class Scoreboard():
         # Display the level at the bottom center of the screen
         self.message_rect = self.message_image.get_rect()
         self.message_rect.centerx = self.screen_rect.centerx
-        self.message_rect.top = (settings.rows * settings.tile_size +
+        self.message_rect.top = (settings.rows * (settings.tile_size + settings.tile_border) +
                                  settings.border_y +
                                  settings.scoreboard_height +
                                  settings.sb_indent)

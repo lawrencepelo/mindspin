@@ -33,9 +33,11 @@ class Tile(Sprite):
         # If tile is to be drawn, create its rect
         if settings != None:
             self.rect = pygame.Rect(
-                self.col * settings.tile_size + settings.border_x,
-                self.row * settings.tile_size + settings.border_y + 
-                           settings.scoreboard_height,
+                self.col * (settings.tile_size + settings.tile_border) +
+                    settings.tile_border + settings.border_x,
+                self.row * (settings.tile_size + settings.tile_border) + 
+                    settings.tile_border + settings.border_y +
+                    settings.scoreboard_height,
                 settings.tile_size,
                 settings.tile_size)
         else:
@@ -54,11 +56,13 @@ class Tile(Sprite):
         
         if self.rect != None:
             self.rect = pygame.Rect(
-                self.col * settings.tile_size + settings.border_x,
-                self.row * settings.tile_size + settings.border_y + 
-                           settings.scoreboard_height,
+                self.col * (settings.tile_size + settings.tile_border) +
+                    settings.tile_border + settings.border_x,
+                self.row * (settings.tile_size + settings.tile_border) + 
+                    settings.tile_border + settings.border_y +
+                    settings.scoreboard_height,
                 settings.tile_size,
-                settings.tile_size)    
+                settings.tile_size)  
         
     def same_location_as(self, other_tile):
         """Returns true iff tile and other_tile share same row, col"""

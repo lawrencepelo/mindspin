@@ -32,7 +32,8 @@ class Settings():
                                 self.reflect_y_value]
         
         # Tiles are square, so tile_size is length of tile edge
-        self.tile_size = 20
+        self.tile_size = 19
+        self.tile_border = 1
         
         # Colors assigned to tile types
         self.player_color = (255, 0, 255) #purple        
@@ -130,6 +131,8 @@ class Settings():
         # multiplied by diff_bonus_multiplier
         self.diff_bonus_multiplier = 10
         
+        self.num_rotate_cw_tiles = 3
+        
         # Calculates settings that depend on other settings
         self.calculate()
 
@@ -139,9 +142,9 @@ class Settings():
         self.initial_tile_col = self.cols // 2
         
         # Size and background color of screen
-        self.screen_width = (self.cols * self.tile_size +
+        self.screen_width = (self.cols * (self.tile_size + self.tile_border) +
                              2 * self.border_x)
-        self.screen_height = (self.rows * self.tile_size +
+        self.screen_height = (self.rows * (self.tile_size + self.tile_border) +
                               2 * self.border_y +
                               self.scoreboard_height +
                               self.message_height)
