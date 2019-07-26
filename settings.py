@@ -1,17 +1,22 @@
+import random
+
 class Settings():
     """A class to store all settings for Mindspin"""
     
-    def __init__(self):
+    def __init__(self, stats):
         """Initialize the game's settings"""        
         # Number of rows and columns in maze
-        self.rows = 20
-        self.cols = 20
+        self.rows_list = [15, 18, 20, 21, 22]
+        self.cols_list = [15, 18, 20, 21, 22]
+        
+        self.max_rows = 30
+        self.max_cols = 50
         
         # Sides that the maze starts and ends on
         # 'T'=top, 'B'=bottom, 'R'=right, 'L'=left 
-        self.start_side = 'W'
-        self.end_side = 'E'
-        
+        self.start_side = None
+        self.end_side = None
+
         # These values denote different types of maze tiles and
         # are stored in maze.values_array
         self.wall_value = 0
@@ -105,10 +110,6 @@ class Settings():
                             'YOU CRUSHED IT!',
                             'DY-NO-MITE!']         
         
-        self.rotate_cw_prob = .05
-        self.rotate_ccw_prob = .05
-        self.reflect_x_prob = .05
-        
         # Initial movement directions assigned to arrow keys
         self.initial_arrow_up = 'U'
         self.initial_arrow_down = 'D'
@@ -131,23 +132,58 @@ class Settings():
         # multiplied by diff_bonus_multiplier
         self.diff_bonus_multiplier = 10
         
-        self.num_rotate_cw_tiles = 3
+        self.rotate_cw_list = [0, 1, 2, 2, 2]
+        self.rotate_ccw_list = [0, 0, 0, 1, 2]
+        self.reflect_x_list = [0, 0, 0, 0, 0]
+        self.reflect_y_list = [0, 0, 0, 0, 0]
         
         # Calculates settings that depend on other settings
-        self.calculate()
+        self.calculate(stats)
 
-    def calculate(self):
+    def calculate(self, stats):
+        self.rows = self.rows_list[stats.level - 1]
+        self.cols = self.cols_list[stats.level - 1]
+
         # Coordinates where maze will begin to draw
         self.initial_tile_row = self.rows // 2
         self.initial_tile_col = self.cols // 2
         
+        self.start_side = random.choice(['N', 'S', 'E', 'W'])
+        if self.start_side == 'N':
+            self.end_side = 'S'
+        elif self.start_side == 'S':
+            self.end_side = 'N'
+        elif self.start_side == 'E':
+            self.end_side = 'W'
+        elif self.start_side == 'W':
+            self.end_side = 'E'
+        
+        self.tile_total_size = self.tile_size + self.tile_border
+        
+        self.rotate_cw_tiles = self.rotate_cw_list[stats.level - 1]
+        
+        self.special_tiles = []
+        for _ in range(0, self.rotate_cw_list[stats.level - 1]):
+            self.special_tiles.append(self.rotate_cw_value)
+        for _ in range(0, self.rotate_ccw_list[stats.level - 1]):
+            self.special_tiles.append(self.rotate_ccw_value)
+        for _ in range(0, self.reflect_x_list[stats.level - 1]):
+            self.special_tiles.append(self.rotate_cw_value)
+        for _ in range(0, self.reflect_y_list[stats.level - 1]):
+            self.special_tiles.append(self.rotate_cw_value)
+        
         # Size and background color of screen
-        self.screen_width = (self.cols * (self.tile_size + self.tile_border) +
+        self.screen_width = (self.max_cols * self.tile_total_size +
                              2 * self.border_x)
-        self.screen_height = (self.rows * (self.tile_size + self.tile_border) +
-                              2 * self.border_y +
-                              self.scoreboard_height +
-                              self.message_height)
+        self.screen_height = (self.max_rows * self.tile_total_size +
+                              4 * self.border_y +
+                              2 * self.sb_font_size)
+                              
+        self.maze_topleft_x = (((self.max_cols - self.cols) * self.tile_total_size) // 2 +
+                                 self.border_x)
+        self.maze_topleft_y = (((self.max_rows - self.rows) * self.tile_total_size) // 2 +
+                                 2 * self.border_y + 
+                                 self.sb_font_size)
                               
         # Value of timer bonus is a quadratic function of time
         # self.bonus_coeff is the coefficient of the time^2 term

@@ -18,9 +18,8 @@ def run_game():
     pygame.mouse.set_visible(False)
     
     # Initialize settings and stats
-    settings = Settings()
-    stats = GameStats()
-    
+    stats = GameStats()    
+    settings = Settings(stats)
     
     # main gameplay loop
     while True:    
@@ -37,7 +36,7 @@ def run_game():
         sb = Scoreboard(settings, screen, stats)
         sb.prep_score(settings, stats)
         sb.prep_level(settings, stats)
-        sb.prep_message(settings, 'WELCOME TO MINDSPIN!')
+        sb.prep_message(settings, 'USE THE ARROW KEYS TO MOVE THE PURPLE SQUARE TO THE RED SQUARE')
         play_button = Button(settings, screen, stats)
         
         # Create random maze

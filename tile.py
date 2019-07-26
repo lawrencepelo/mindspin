@@ -32,14 +32,7 @@ class Tile(Sprite):
         
         # If tile is to be drawn, create its rect
         if settings != None:
-            self.rect = pygame.Rect(
-                self.col * (settings.tile_size + settings.tile_border) +
-                    settings.tile_border + settings.border_x,
-                self.row * (settings.tile_size + settings.tile_border) + 
-                    settings.tile_border + settings.border_y +
-                    settings.scoreboard_height,
-                settings.tile_size,
-                settings.tile_size)
+            self.create_rect(settings)
         else:
             self.rect = None
             
@@ -55,14 +48,7 @@ class Tile(Sprite):
             self.col += 1
         
         if self.rect != None:
-            self.rect = pygame.Rect(
-                self.col * (settings.tile_size + settings.tile_border) +
-                    settings.tile_border + settings.border_x,
-                self.row * (settings.tile_size + settings.tile_border) + 
-                    settings.tile_border + settings.border_y +
-                    settings.scoreboard_height,
-                settings.tile_size,
-                settings.tile_size)  
+            self.create_rect(settings)
         
     def same_location_as(self, other_tile):
         """Returns true iff tile and other_tile share same row, col"""
@@ -74,3 +60,20 @@ class Tile(Sprite):
     def draw(self):
         """Draw the tile to the screen"""
         pygame.draw.rect(self.screen, self.color, self.rect)
+        
+    def create_rect(self, settings):
+        self.rect = pygame.Rect(
+            settings.maze_topleft_x +
+                self.col * settings.tile_total_size +
+                settings.tile_border,
+            settings.maze_topleft_y +
+                self.row * settings.tile_total_size + 
+                settings.tile_border,
+            settings.tile_size,
+            settings.tile_size)
+            
+    def rotate_cw(self, settings):
+        temp = self.row
+        self.row = self.col
+        self.col = settings.rows - temp - 1
+        self.create_rect(settings)

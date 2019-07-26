@@ -35,10 +35,10 @@ class Maze():
         self.end_tile = None
         
         self.wall_rect = pygame.Rect(
-            settings.border_x,
-            settings.border_y + settings.scoreboard_height,
-            settings.cols * (settings.tile_size + settings.tile_border),
-            settings.rows * (settings.tile_size + settings.tile_border))
+            settings.maze_topleft_x,
+            settings.maze_topleft_y,
+            settings.cols * settings.tile_total_size,
+            settings.rows * settings.tile_total_size)
         
         # values_array is a 2D list that holds maze tile values
         # in text form.
@@ -85,13 +85,10 @@ class Maze():
         
     def can_move_to_tile(self, settings, tile):
         """Returns True if given tile is on path, otherwise False"""
-        if not self.is_inside_maze(settings, tile):
-            return False
-            
-        if self.values_array[tile.row][tile.col] == settings.wall_value:
-            return False
-        else:
-            return True        
+        for path_tile in self.path_tiles:
+            if tile.same_location_as(path_tile):
+                return True
+        return False
 
     def can_extend_path_to_tile(self, settings, tile):
         """
@@ -298,11 +295,30 @@ class Maze():
         return False
 
     def choose_special_tiles(self, settings):
+        special_prob = len(settings.special_tiles) / len(self.solve_tiles)
+        for row in range(0, settings.rows):
+            for col in range(0, settings.cols):
+                new_tile = Tile(row, col)
+                new_tile_value = self.get_value(settings, new_tile)
+                if (new_tile_value != settings.wall_value and
+                    new_tile_value != settings.start_value and
+                    new_tile_value != settings.end_value):
+
+                    roll = random.uniform(0, 1)
+                    if roll <= special_prob:
+                        special_value = random.choice(settings.special_tiles)
+                        self.set_value(new_tile, special_value)
+                        
         solve_tile_list = list(range(0, len(self.solve_tiles)))        
         solve_tile_shuffle = random.sample(solve_tile_list,
-                                           settings.num_rotate_cw_tiles)
+                                           len(settings.special_tiles))
+        special_shuffle = random.sample(settings.special_tiles, 
+                                        len(settings.special_tiles))
+                                           
         i = 0
         for solve_tile in self.solve_tiles:
             if i in solve_tile_shuffle:
-                self.set_value(solve_tile, settings.rotate_cw_value)
+                self.set_value(solve_tile, special_shuffle.pop())
+            else:
+                self.set_value(solve_tile, settings.path_value)
             i += 1

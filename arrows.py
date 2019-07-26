@@ -11,10 +11,10 @@ class Arrows():
         
     def rotate_cw(self):
         temp = self.up
-        self.up = self.left
-        self.left = self.down
-        self.down = self.right
-        self.right = temp
+        self.up = self.right
+        self.right = self.down
+        self.down = self.left
+        self.left = temp
 
     def rotate_ccw(self):
         temp = self.up

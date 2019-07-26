@@ -10,10 +10,11 @@ class Scoreboard():
         self.screen = screen
         self.screen_rect = screen.get_rect()
         
-        # Font settings for scoring informations
+        # Font settings for scoring information
         self.text_color = settings.sb_font_color
         self.font = pygame.font.SysFont(settings.sb_font, 
                                         settings.sb_font_size)
+        #print(self.font.get_ascent())
                                         
         self.bonus = None
         
@@ -48,8 +49,8 @@ class Scoreboard():
         # Display the bonus at the top left of the screen
         self.bonus_rect = self.bonus_image.get_rect()
         self.bonus_rect.left = (self.screen_rect.left + 
-                                settings.sb_indent)
-        self.bonus_rect.top = settings.sb_indent
+                                settings.border_x)
+        self.bonus_rect.top = settings.border_y
         
     def prep_score(self, settings, stats):
         """Turn the score into a rendered image"""
@@ -62,7 +63,7 @@ class Scoreboard():
         # Display the score at the top center of the screen
         self.score_rect = self.score_image.get_rect()
         self.score_rect.centerx = self.screen_rect.centerx
-        self.score_rect.top = settings.sb_indent
+        self.score_rect.top = settings.border_y
         
     def prep_level(self, settings, stats):
         """Turn the score into a rendered image"""
@@ -75,8 +76,8 @@ class Scoreboard():
         # Display the level at the top right of the screen
         self.level_rect = self.level_image.get_rect()
         self.level_rect.right = (self.screen_rect.right - 
-                                 settings.sb_indent)
-        self.level_rect.top = settings.sb_indent
+                                 settings.border_x)
+        self.level_rect.top = settings.border_y
         
     def prep_message(self, settings, msg):
         """Turn the message into a rendered image"""
@@ -88,10 +89,9 @@ class Scoreboard():
         # Display the level at the bottom center of the screen
         self.message_rect = self.message_image.get_rect()
         self.message_rect.centerx = self.screen_rect.centerx
-        self.message_rect.top = (settings.rows * (settings.tile_size + settings.tile_border) +
-                                 settings.border_y +
-                                 settings.scoreboard_height +
-                                 settings.sb_indent)
+        self.message_rect.top = (settings.screen_height -
+                                 settings.border_y -
+                                 settings.sb_font_size)
 
     def draw_scoreboard(self):
         """Draw scoreboard elements to the screen"""

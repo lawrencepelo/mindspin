@@ -64,12 +64,15 @@ def check_keydown_events(settings, screen, event, maze, player_tile,
             player_tile.move(settings, direction)
             new_tile_value = maze.get_value(settings, player_tile)
             # take action based on next tile, such as update arrows
-            call_tile_event(settings, arrows, new_tile_value, stats)
+            call_tile_event(settings, maze, player_tile, arrows, new_tile_value, stats)
 
-def call_tile_event(settings, arrows, tile_value, stats):
+def call_tile_event(settings, maze, player_tile, arrows, tile_value, stats):
     """Implements event based on tile value"""
     if tile_value == settings.rotate_cw_value:
         arrows.rotate_cw()
+        for path_tile in maze.path_tiles:
+            path_tile.rotate_cw(settings)
+        player_tile.rotate_cw(settings)
     elif tile_value == settings.rotate_ccw_value:
         arrows.rotate_ccw()
     elif tile_value == settings.reflect_x_value:
@@ -115,9 +118,9 @@ def player_solved_maze(settings, screen, maze, player_tile,
     # Increment level
     stats.level += 1
     # Increase difficulty of next maze
-    settings.rows += 1
-    settings.cols += 2
+    #settings.rows += 1
+    #settings.cols += 2
     # Recalculate settings based on changed settings
-    settings.calculate()
+    settings.calculate(stats)
     # Change status so player can start next maze
     stats.maze_status = 'before'
