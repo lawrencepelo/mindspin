@@ -4,8 +4,11 @@ class GameStats():
     def __init__(self):
         """Initialize statistics"""
         
-        # game_active = True when player can make moves
-        # game_active = False between mazes
+        # maze_status = 'before' when game is waiting for player to
+        #               activate the next maze.
+        # maze_status = 'during' while player attempting to solve maze.
+        # maze_status = 'after' when player has just solved maze
+        #               and before player can activate new maze.
         self.maze_status = 'before'
 
         self.score = 0

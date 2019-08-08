@@ -5,19 +5,19 @@ class Button():
     This class creates an object to display a message
     telling player how to activate game between levels
     """
-    def __init__(self, settings, screen, stats):
+    def __init__(self, sets, screen, stats):
         """ Initialize button attributes"""
         self.screen = screen
         self.screen_rect = screen.get_rect()
         
         # Set the dimensions and properties of the button
-        self.width = settings.button_width
-        self.height = settings.button_height
-        self.button_color = settings.button_color
-        self.text_color = settings.button_text_color
-        self.font = pygame.font.SysFont(settings.button_font,
-                                        settings.button_font_size)
-        self.message = settings.button_message
+        self.width = sets.button_width
+        self.height = sets.button_height
+        self.button_color = sets.button_color
+        self.text_color = sets.button_text_color
+        self.font = pygame.font.SysFont(sets.button_font,
+                                        sets.button_font_size)
+        self.message = sets.button_message
         
         # Build the button's rect object and center it
         self.rect = pygame.Rect(0, 0, self.width, self.height)
